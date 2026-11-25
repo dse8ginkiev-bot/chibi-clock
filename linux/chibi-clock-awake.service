@@ -1,0 +1,20 @@
+[Unit]
+Description=Keep the Chibi Clock screen awake (defeat DPMS / screensaver)
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+# Keeps an org.freedesktop.ScreenSaver inhibitor, pokes the session for
+# activity and re-enables DPMS if something else turns it off.
+ExecStart=/bin/sh -c '\
+while true; do \
+  kscreen-doctor --dpms on >/dev/null 2>&1; \
+  dbus-send --session --dest=org.freedesktop.ScreenSaver --type=method_call \
+    /ScreenSaver org.freedesktop.ScreenSaver.SimulateUserActivity >/dev/null 2>&1; \
+  sleep 25; \
+done'
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

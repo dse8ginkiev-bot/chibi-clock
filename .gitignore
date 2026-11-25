@@ -1,0 +1,14 @@
+# build
+build/
+.gradle/
+local.properties
+*.iml
+.idea/
+.kotlin/
+
+# os
+.DS_Store
+Thumbs.db
+
+# generated previews
+art/preview_digits.html

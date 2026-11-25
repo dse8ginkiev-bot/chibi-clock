@@ -1,0 +1,39 @@
+plugins {
+    id "com.android.application"
+}
+
+android {
+    namespace "com.lifai.chibiclock"
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "com.lifai.chibiclock"
+        minSdk 21
+        targetSdk 36
+        versionCode 1
+        versionName "1.0"
+    }
+
+    // The web clock lives at ../clock so the same files run in the app,
+    // in a desktop browser and in the Linux kiosk setup. Single source.
+    sourceSets {
+        main {
+            assets.srcDirs = ["../clock"]
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    lint {
+        abortOnError false
+    }
+}

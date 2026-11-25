@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Chibi Clock</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100%; width: 100%;
+    background: #0b0a12; overflow: hidden;
+    font-family: Roboto, "Segoe UI", Arial, sans-serif;
+    -webkit-user-select: none; user-select: none;
+  }
+  #bg {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background-size: cover; background-position: center center;
+    background-repeat: no-repeat;
+  }
+  #veil {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: -webkit-radial-gradient(center, ellipse cover, rgba(11,10,18,0.15) 0%, rgba(11,10,18,0.88) 100%);
+    background: radial-gradient(ellipse at center, rgba(11,10,18,0.15) 0%, rgba(11,10,18,0.88) 100%);
+  }
+  #stage {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    display: -webkit-box; display: -webkit-flex; display: flex;
+    -webkit-flex-direction: column; flex-direction: column;
+    -webkit-box-align: center; -webkit-align-items: center; align-items: center;
+    -webkit-box-pack: center; -webkit-justify-content: center; justify-content: center;
+  }
+  #date {
+    font-size: 3.1vmin; letter-spacing: 0.36em; text-transform: uppercase;
+    color: #d5cff0; opacity: 0.8; margin-bottom: 2.4vmin; padding-left: 0.36em;
+  }
+  #row {
+    display: -webkit-box; display: -webkit-flex; display: flex;
+    -webkit-box-align: center; -webkit-align-items: center; align-items: center;
+  }
+  #mascot { width: 17vmin; margin-right: 1.6vmin; }
+  #mascot svg { display: block; width: 100%; height: auto; }
+  #time { display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-align: center; -webkit-align-items: center; align-items: center; }
+  #time img { height: 30vmin; width: auto; display: block; margin: 0 0.35vmin; }
+  #time img.sep { height: 30vmin; margin: 0 0.1vmin; }
+  #sec { font-size: 6.2vmin; color: #6fd3ff; opacity: 0.75; margin-left: 2.2vmin; font-weight: 300; }
+  #ampm { font-size: 3.6vmin; color: #d5cff0; opacity: 0.7; margin-left: 1.6vmin; letter-spacing: 0.15em; }
+  #hint {
+    position: fixed; bottom: 1.6vmin; left: 0; right: 0; text-align: center;
+    font-size: 1.7vmin; color: #6d688a; opacity: 0.55;
+  }
+  #hint.off { display: none; }
+  /* gentle bob so the picture never sits perfectly still (helps against burn-in) */
+  @-webkit-keyframes bob { 0% { -webkit-transform: translateY(0); } 50% { -webkit-transform: translateY(-0.9vmin); } 100% { -webkit-transform: translateY(0); } }
+  @keyframes bob { 0% { transform: translateY(0); } 50% { transform: translateY(-0.9vmin); } 100% { transform: translateY(0); } }
+  #mascot { -webkit-animation: bob 5.5s ease-in-out infinite; animation: bob 5.5s ease-in-out infinite; }
+  /* blink: a skin-coloured lid fades over the eye */
+  @-webkit-keyframes blink { 0%, 93%, 100% { opacity: 0; } 95% { opacity: 1; } 97% { opacity: 0; } }
+  @keyframes blink { 0%, 93%, 100% { opacity: 0; } 95% { opacity: 1; } 97% { opacity: 0; } }
+  .lid { -webkit-animation: blink 6s linear infinite; animation: blink 6s linear infinite; opacity: 0; }
+  .lid2 { -webkit-animation-delay: 0.08s; animation-delay: 0.08s; }
+</style>
+</head>
+<body>
+<div id="bg"></div>
+<div id="veil"></div>
+<div id="stage">
+  <div id="date">&nbsp;</div>
+  <div id="row">
+    <div id="mascot">
+      <svg viewBox="0 0 140 212" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="70" cy="74" rx="51" ry="59" fill="#4a3fbf"/>
+        <ellipse cx="26" cy="100" rx="9" ry="26" fill="#5b4fe0"/>
+        <ellipse cx="114" cy="100" rx="9" ry="26" fill="#5b4fe0"/>
+        <ellipse cx="70" cy="74" rx="42" ry="44" fill="#ffe3d3"/>
+        <path d="M28,70 C32,32 50,16 70,16 C90,16 110,32 112,70 C102,52 92,44 82,52 C76,40 62,38 56,52 C48,44 36,52 28,70 Z" fill="#5b4fe0"/>
+        <ellipse cx="54" cy="80" rx="9" ry="11" fill="#241f3d"/>
+        <ellipse cx="86" cy="80" rx="9" ry="11" fill="#241f3d"/>
+        <circle cx="57" cy="75" r="3.4" fill="#ffffff"/>
+        <circle cx="89" cy="75" r="3.4" fill="#ffffff"/>
+        <ellipse class="lid" cx="54" cy="80" rx="10" ry="12.5" fill="#ffe3d3"/>
+        <ellipse class="lid lid2" cx="86" cy="80" rx="10" ry="12.5" fill="#ffe3d3"/>
+        <ellipse cx="40" cy="99" rx="9" ry="5" fill="#ff9ab5" opacity="0.5"/>
+        <ellipse cx="100" cy="99" rx="9" ry="5" fill="#ff9ab5" opacity="0.5"/>
+        <path d="M65,101 q5,6 10,0" stroke="#c07a83" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <rect x="63" y="110" width="14" height="16" rx="6" fill="#f3cdbc"/>
+        <path d="M46,128 C40,142 34,172 32,206 L108,206 C106,172 100,142 94,128 Z" fill="#ff5c8a"/>
+        <path d="M52,128 q18,12 36,0 l-4,12 q-14,8 -28,0 Z" fill="#ffd0dd"/>
+        <ellipse cx="38" cy="164" rx="7.5" ry="21" fill="#f3cdbc"/>
+        <ellipse cx="102" cy="164" rx="7.5" ry="21" fill="#f3cdbc"/>
+        <circle cx="70" cy="176" r="6" fill="#ffffff" opacity="0.85"/>
+        <path d="M70,170 v12 M64,176 h12" stroke="#ff5c8a" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div id="time"></div>
+    <div id="sec"></div>
+    <div id="ampm"></div>
+  </div>
+</div>
+<div id="hint">долгое нажатие — настройки</div>
+<script>
+(function () {
+  var cfg = {
+    theme: "forest",
+    h24: true,
+    seconds: false,
+    lang: "ru",
+    hint: true,
+    mascot: true,
+    dim: 0
+  };
+
+  var MONTHS = {
+    ru: ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"],
+    en: ["January","February","March","April","May","June","July","August","September","October","November","December"]
+  };
+  var DAYS = {
+    ru: ["воскресенье","понедельник","вторник","среда","четверг","пятница","суббота"],
+    en: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+  };
+  var BG = { forest: "themes/forest.jpg", none: "" };
+
+  var elDate = document.getElementById("date");
+  var elTime = document.getElementById("time");
+  var elSec = document.getElementById("sec");
+  var elAmpm = document.getElementById("ampm");
+  var elBg = document.getElementById("bg");
+  var elHint = document.getElementById("hint");
+  var elMascot = document.getElementById("mascot");
+  var elRow = document.getElementById("row");
+  var slots = [];
+  var last = "";
+
+  // Width of one digit in units of digit height (viewBox 100x140).
+  var DIGIT_W = 100 / 140;
+  var SEP_W = 40 / 140;
+
+  function layout() {
+    var w = window.innerWidth || document.documentElement.clientWidth;
+    var h = window.innerHeight || document.documentElement.clientHeight;
+    var mascotUnit = cfg.mascot ? 0.62 : 0;
+    var units = 4 * DIGIT_W + SEP_W + mascotUnit + 0.30;
+    var digitH = Math.min((w * 0.92) / units, h * 0.46);
+    if (digitH < 22) digitH = 22;
+    digitH = Math.round(digitH);
+
+    var imgs = elTime.getElementsByTagName("img");
+    var gap = Math.round(digitH * 0.02);
+    for (var i = 0; i < imgs.length; i++) {
+      imgs[i].style.height = digitH + "px";
+      imgs[i].style.marginLeft = gap + "px";
+      imgs[i].style.marginRight = gap + "px";
+    }
+    elMascot.style.width = Math.round(digitH * mascotUnit) + "px";
+    elMascot.style.marginRight = Math.round(digitH * 0.10) + "px";
+    elSec.style.fontSize = Math.round(digitH * 0.22) + "px";
+    elAmpm.style.fontSize = Math.round(digitH * 0.13) + "px";
+    elDate.style.fontSize = Math.round(digitH * 0.11) + "px";
+    elHint.style.fontSize = Math.round(digitH * 0.062) + "px";
+  }
+
+  window.onresize = layout;
+  if (window.addEventListener) window.addEventListener("resize", layout, false);
+
+  function makeImg(cls) {
+    var img = document.createElement("img");
+    if (cls) img.className = cls;
+    return img;
+  }
+
+  function srcFor(digit, family) {
+    return "digits/" + digit + "_" + family + ".svg";
+  }
+
+  // 4 digit slots + separator, built once
+  function buildSlots(labels) {
+    while (elTime.firstChild) elTime.removeChild(elTime.firstChild);
+    slots = [];
+    for (var i = 0; i < labels.length; i++) {
+      if (labels[i] === ":") {
+        var sep = makeImg("sep");
+        sep.src = "digits/colon.svg";
+        elTime.appendChild(sep);
+      } else {
+        var img = makeImg("");
+        elTime.appendChild(img);
+        slots.push({ el: img, family: labels[i] });
+      }
+    }
+  }
+
+  function setDigit(slot, d) {
+    var want = srcFor(d, slot.family);
+    if (slot.el.getAttribute("data-src") === want) return;
+    slot.el.setAttribute("data-src", want);
+    slot.el.src = want;
+  }
+
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+
+  function tick() {
+    var d = new Date();
+    var h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
+    var hh = h;
+    if (!cfg.h24) {
+      hh = h % 12;
+      if (hh === 0) hh = 12;
+    }
+    var key = hh + ":" + m + (cfg.seconds ? ":" + s : "");
+    if (key !== last) {
+      last = key;
+      var digits = pad(hh) + pad(m);
+      for (var i = 0; i < 4; i++) setDigit(slots[i], digits.charAt(i));
+      elSec.textContent = cfg.seconds ? (s < 10 ? "0" + s : "" + s) : "";
+      elAmpm.textContent = cfg.h24 ? "" : (h < 12 ? "AM" : "PM");
+      var L = cfg.lang;
+      elDate.textContent = DAYS[L][d.getDay()] + ", " + d.getDate() + " " + MONTHS[L][d.getMonth()];
+    }
+    setTimeout(tick, 250);
+  }
+
+  function applyConfig(next) {
+    if (next) for (var k in next) if (next.hasOwnProperty(k)) cfg[k] = next[k];
+    buildSlots(cfg.seconds ? ["h", "h", ":", "m", "m"] : ["h", "h", ":", "m", "m"]);
+    last = "";
+    var bg = BG[cfg.theme];
+    elBg.style.backgroundImage = bg ? "url('" + bg + "')" : "none";
+    elHint.className = cfg.hint ? "" : "off";
+    elMascot.style.display = cfg.mascot ? "block" : "none";
+    document.getElementById("veil").style.opacity = cfg.dim ? "0.85" : "1";
+    layout();
+    tick();
+  }
+
+  // hook for the Android wrapper: window.CC_SET({...})
+  window.CC_SET = function (json) { applyConfig(json); };
+
+  applyConfig(null);
+})();
+</script>
+</body>
+</html>

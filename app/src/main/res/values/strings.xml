@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Chibi Clock</string>
+    <string name="settings_title">Настройки</string>
+    <string name="settings_note">Выключение экрана отключено, пока приложение открыто. Долгое нажатие или кнопка «назад» возвращают сюда.</string>
+    <string name="hint_settings">Настройки</string>
+    <string name="group_look">Оформление</string>
+    <string name="group_brightness">Яркость</string>
+    <string name="group_night">Ночной режим</string>
+    <string name="theme_forest">Туманный лес</string>
+    <string name="theme_plain">Без фона</string>
+    <string name="opt_seconds">Показывать секунды</string>
+    <string name="opt_12h">12-часовой формат</string>
+    <string name="opt_mascot">Показывать чиби-компаньона</string>
+    <string name="opt_hint">Показывать подсказку внизу</string>
+    <string name="opt_day_bright">Днём</string>
+    <string name="opt_night_bright">Ночью</string>
+    <string name="opt_night_from">Ночь начинается в (час)</string>
+    <string name="opt_night_to">Ночь кончается в (час)</string>
+    <string name="btn_done">Готово</string>
+    <string name="btn_quit">Закрыть часы</string>
+</resources>

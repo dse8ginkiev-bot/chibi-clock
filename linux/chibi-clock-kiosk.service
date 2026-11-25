@@ -1,0 +1,18 @@
+[Unit]
+Description=Chibi Clock kiosk (full-screen browser)
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+# Firefox in kiosk mode pointed at the local clock page.
+# Adjust the path if you cloned the repo somewhere else.
+ExecStart=/usr/bin/firefox --kiosk file:///home/pmos/chibi-clock/clock/index.html
+Restart=always
+RestartSec=10
+# Firefox writes a lot; keep it from filling the journal on small devices.
+StandardOutput=null
+StandardError=journal
+
+[Install]
+WantedBy=default.target
