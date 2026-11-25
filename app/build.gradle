@@ -27,9 +27,25 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
+    // A public "community" key, committed on purpose: every build — local and CI —
+    // gets the same signature, so a newer APK installs over an older one.
+    // It is not a secret and it is not a Play upload key.
+    signingConfigs {
+        community {
+            storeFile file("keystore.jks")
+            storePassword "chibiclock"
+            keyAlias "chibiclock"
+            keyPassword "chibiclock"
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig signingConfigs.community
+        }
         release {
             minifyEnabled false
+            signingConfig signingConfigs.community
         }
     }
 

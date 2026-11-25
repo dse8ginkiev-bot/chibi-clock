@@ -29,9 +29,12 @@ Made because a 2018 tablet is a terrible tablet and an excellent clock.
 
 Long press anywhere on the clock (or the back key) opens settings.
 
-> The APK is debug-signed. That's fine for sideloading, but it is not the same
-> key Google Play would use — don't expect Play to accept it, and don't expect
-> to update over a Play build later without uninstalling.
+> **Signing:** the APK is signed with a public "community" key that is committed to
+> the repo on purpose (`app/keystore.jks`, password `chibiclock`), so a local build
+> and a CI build produce the same signature and newer APKs install over older ones.
+> Certificate fingerprint (SHA-256):
+> `5B:79:57:6B:4E:3A:B1:28:85:BE:EF:E7:FE:7C:78:12:C0:22:CC:73:3E:3A:11:C8:60:B7:05:3B:6D:D5:6E:11`.
+> It is not a Google Play upload key — Play would not accept it.
 
 ## Build it yourself
 
